@@ -25,7 +25,20 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /docker-docker-but-worse
 
 # Run
 
-ENTRYPOINT ["/docker-docker-but-worse"]
+# ENTRYPOINT ["/docker-docker-but-worse"]
 
-# CMD ["/docker-docker-but-worse", "run",  "echo hello world"]
-# CMD ["/docker-docker-but-worse"]
+# CMD ["/docker-docker-but-worse", "run", "echo", "hello world"]
+# CMD ["/docker-dopscker-but-worse"]
+# CMD ["/docker-docker-but-worse", "run", "ls", "/proc"]
+# CMD ["/docker-docker-but-worse", "run", "ls", "/proc/self"]
+# CMD ["/docker-docker-but-worse", "run", "ls", "/"]
+CMD ["/docker-docker-but-worse", "run", "ps"]
+
+
+
+# To build the image, run the following command in the directory where the Dockerfile is located:
+# docker build --tag docker-docker-but-worse .
+
+# To run the image, execute the following command:
+# $ docker run --cap-add=SYS_ADMIN docker-docker-but-worse run hostname 
+# $ docker run --cap-add=SYS_ADMIN docker-docker-but-worse
