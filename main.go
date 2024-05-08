@@ -19,8 +19,6 @@ func main() {
 }
 
 func parent() {
-	// fmt.Printf("Running %v\n", os.Args[2:])
-
 	hostname, err := os.Hostname()
 	if err != nil {
 		fmt.Println(err)
@@ -50,21 +48,26 @@ func child() {
 		os.Exit(1)
 	}
 	fmt.Printf("Hostname: %s\n", hostname)
-
 	fmt.Printf("Child running %v as %d\n", os.Args[2:], os.Getpid())
 
 	syscall.Sethostname([]byte("container"))
-
-	syscall.Chroot("/docker-docker-but-worse")
-	syscall.Chdir("/")
-	syscall.Mount("proc", "proc", "proc", 0, "")
-
 	new_hostname, err := os.Hostname()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 	fmt.Printf("New Hostname: %s\n", new_hostname)
+   // swapping the root filesystem
+   // prior to this the isolated process had the same filesystem as the host filesystem 
+	must(syscall.Mount("rootfs", "rootfs", "", syscall.MS_BIND, ""))
+	must(os.MkdirAll("rootfs/oldrootfs", 0700))
+	must(syscall.PivotRoot("rootfs", "rootfs/oldrootfs"))
+	must(os.Chdir("/"))
+
+	// syscall.Chroot("/docker-docker-but-worse")
+	// syscall.Chdir("/")
+	// syscall.Mount("proc", "proc", "proc", 0, "")
+
 
 	cmd := exec.Command(os.Args[2], os.Args[3:]...)
 	cmd.Stdin = os.Stdin
